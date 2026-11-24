@@ -75,7 +75,7 @@ struct PlayerView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(p.name)
                 .font(.title2.bold())
-            Text("#\(p.tag)")
+            Text(p.tag.hasPrefix("#") ? p.tag : "#" + p.tag)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
 

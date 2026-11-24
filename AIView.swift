@@ -45,7 +45,7 @@ struct AIView: View {
                         .padding()
                     }
                     .scrollDismissesKeyboard(.interactively)
-                    .onChange(of: messages.count) { _, _ in
+                    .onChange(of: messages.count) { _ in
                         if let last = messages.last {
                             withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
                         }
