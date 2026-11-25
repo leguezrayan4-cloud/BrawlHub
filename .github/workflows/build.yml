@@ -49,10 +49,10 @@ jobs:
           name: BrawlHub-ipa
           path: BrawlHub.ipa
 
-  # Lancé seulement si la première machine n'a pas pu tourner
+  # Lancé si la première machine échoue OU si elle a été annulée
   build-fallback:
     needs: build-primary
-    if: ${{ failure() }}
+    if: ${{ failure() || cancelled() }}
     runs-on: macos-15
     timeout-minutes: 60
     steps:
