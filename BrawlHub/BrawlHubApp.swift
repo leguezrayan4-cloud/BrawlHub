@@ -4,7 +4,7 @@ import SwiftUI
 struct BrawlHubApp: App {
     var body: some Scene {
         WindowGroup {
-            BrawlerListView()
+            MainTabView()
                 .preferredColorScheme(.dark)
         }
     }
