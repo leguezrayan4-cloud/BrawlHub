@@ -22,6 +22,8 @@ struct PlayerProfile: Decodable {
 }
 
 struct PlayerView: View {
+    var initialTag: String = ""
+
     @State private var tag = ""
     @State private var profile: PlayerProfile?
     @State private var loading = false
@@ -68,6 +70,12 @@ struct PlayerView: View {
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Joueur")
             .dismissKeyboardOnTap()
+            .onAppear {
+                if tag.isEmpty, !initialTag.isEmpty {
+                    tag = initialTag
+                    search()
+                }
+            }
         }
     }
 
