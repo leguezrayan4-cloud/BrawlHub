@@ -9,12 +9,14 @@ struct MockMode: Identifiable {
     let id = UUID()
     let name: String
     let summary: String
+    let icon: String
     let maps: [MockMap]
 }
 
 struct MockUpdate: Identifiable {
     let id = UUID()
     let title: String
+    let version: String
     let date: String
     let summary: String
     let details: [String]
@@ -22,41 +24,27 @@ struct MockUpdate: Identifiable {
 
 enum MockData {
     static let modes: [MockMode] = [
-        MockMode(
-            name: "Mode 1",
-            summary: "Description de démonstration du mode 1.",
-            maps: [MockMap(name: "Carte 1"), MockMap(name: "Carte 2"), MockMap(name: "Carte 3")]
-        ),
-        MockMode(
-            name: "Mode 2",
-            summary: "Description de démonstration du mode 2.",
-            maps: [MockMap(name: "Carte 4"), MockMap(name: "Carte 5")]
-        ),
-        MockMode(
-            name: "Mode 3",
-            summary: "Description de démonstration du mode 3.",
-            maps: [MockMap(name: "Carte 6")]
-        ),
+        MockMode(name: "Gem Grab", summary: "Collectez 10 gemmes et tenez bon pour remporter la victoire.", icon: "diamond.fill",
+                 maps: [MockMap(name: "Hard Rock Mine"), MockMap(name: "Undermine"), MockMap(name: "Crystal Arcade")]),
+        MockMode(name: "Brawl Ball", summary: "Marquez 2 buts avant l'équipe adverse.", icon: "soccerball",
+                 maps: [MockMap(name: "Super Stadium"), MockMap(name: "Backyard Bowl")]),
+        MockMode(name: "Heist", summary: "Attaquez le coffre ennemi ou défendez le vôtre.", icon: "lock.fill",
+                 maps: [MockMap(name: "Safe Zone"), MockMap(name: "Kaboom Canyon")]),
+        MockMode(name: "Bounty", summary: "Éliminez des ennemis pour accumuler des étoiles.", icon: "star.fill",
+                 maps: [MockMap(name: "Layer Cake"), MockMap(name: "Shooting Star")]),
+        MockMode(name: "Showdown", summary: "Le dernier survivant remporte la partie.", icon: "figure.run",
+                 maps: [MockMap(name: "Skull Creek"), MockMap(name: "Feast or Famine"), MockMap(name: "Cavern Churn")]),
     ]
 
     static let updates: [MockUpdate] = [
-        MockUpdate(
-            title: "Mise à jour exemple 1",
-            date: "01 janvier 2026",
-            summary: "Résumé de démonstration de la première mise à jour.",
-            details: ["Premier point de démonstration", "Deuxième point de démonstration", "Troisième point de démonstration"]
-        ),
-        MockUpdate(
-            title: "Mise à jour exemple 2",
-            date: "15 janvier 2026",
-            summary: "Résumé de démonstration de la deuxième mise à jour.",
-            details: ["Point de démonstration A", "Point de démonstration B"]
-        ),
-        MockUpdate(
-            title: "Mise à jour exemple 3",
-            date: "01 février 2026",
-            summary: "Résumé de démonstration de la troisième mise à jour.",
-            details: ["Point de démonstration unique"]
-        ),
+        MockUpdate(title: "Saison Hypercharge", version: "58.0", date: "1 novembre 2026",
+                   summary: "Nouvelle saison avec des hypercharges inédites pour 8 brawlers.",
+                   details: ["8 nouvelles hypercharges", "Nouveau mode temporaire : Wipeout", "Équilibrage général", "Nouveau brawler : Juju"]),
+        MockUpdate(title: "Mise à jour Halloween", version: "57.5", date: "15 octobre 2026",
+                   summary: "Événements spéciaux Halloween et skins limités.",
+                   details: ["5 skins Halloween exclusifs", "Mode Zombie Brawl temporaire", "Corrections de bugs"]),
+        MockUpdate(title: "Patch équilibrage", version: "57.2", date: "1 octobre 2026",
+                   summary: "Ajustements de 20 brawlers suite aux retours de la communauté.",
+                   details: ["Nerf de Mico et Melodie", "Buff de Buster et Gray", "Correction du bug de téléportation"]),
     ]
 }
