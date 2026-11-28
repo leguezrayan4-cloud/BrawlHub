@@ -20,7 +20,7 @@ struct BrawlerListView: View {
                 } else if let error = store.error, store.brawlers.isEmpty {
                     VStack(spacing: 12) {
                         Text(error).multilineTextAlignment(.center)
-                        Button("Réessayer") { Task { await store.load() } }
+                        Button("Réessayer") { Haptics.tap(); Task { await store.load() } }
                             .buttonStyle(.borderedProminent).tint(.yellow)
                     }.padding()
                 } else {
@@ -29,6 +29,7 @@ struct BrawlerListView: View {
                             ForEach(filtered) { b in
                                 NavigationLink(value: b.id) { BrawlerCard(brawler: b) }
                                     .buttonStyle(.plain)
+                                    .hapticTap()
                             }
                         }.padding()
                     }
@@ -42,7 +43,10 @@ struct BrawlerListView: View {
                 }
             }
             .task { if store.brawlers.isEmpty { await store.load() } }
-            .refreshable { await store.load() }
+            .refreshable {
+                await store.load()
+                Haptics.impact(.medium)
+            }
         }
     }
 }

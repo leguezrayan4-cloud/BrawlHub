@@ -88,6 +88,7 @@ struct AIView: View {
                 if selectedConv == nil {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
+                            Haptics.impact(.medium)
                             selectedConv = store.newConversation()
                         } label: {
                             Image(systemName: "square.and.pencil")
@@ -95,7 +96,7 @@ struct AIView: View {
                     }
                 } else {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button { selectedConv = nil } label: {
+                        Button { Haptics.tap(); selectedConv = nil } label: {
                             Image(systemName: "chevron.left")
                         }
                     }
@@ -116,7 +117,8 @@ struct AIView: View {
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     Button {
-                        selectedConv = store.newConversation()
+                        Haptics.impact(.medium)
+                            selectedConv = store.newConversation()
                     } label: {
                         Text("Nouvelle conversation")
                             .font(.headline)
@@ -129,7 +131,7 @@ struct AIView: View {
             } else {
                 List {
                     ForEach(store.conversations) { conv in
-                        Button { selectedConv = conv } label: {
+                        Button { Haptics.tap(); selectedConv = conv } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(conv.name)
                                     .font(.headline)
@@ -142,6 +144,7 @@ struct AIView: View {
                         }
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
+                                Haptics.warning()
                                 store.delete(conv)
                             } label: {
                                 Label("Supprimer", systemImage: "trash")
@@ -234,16 +237,17 @@ struct ChatView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button { onBack() } label: {
+                Button { Haptics.tap(); onBack() } label: {
                     Image(systemName: "chevron.left")
                 }
             }
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button { showRename = true } label: {
+                    Button { Haptics.tap(); showRename = true } label: {
                         Label("Renommer", systemImage: "pencil")
                     }
                     Button(role: .destructive) {
+                        Haptics.warning()
                         store.delete(conversation)
                         onBack()
                     } label: {
@@ -258,6 +262,7 @@ struct ChatView: View {
             TextField("Nom de la conversation", text: $newName)
             Button("OK") {
                 if !newName.isEmpty {
+                    Haptics.success()
                     conversation.name = newName
                     store.rename(conversation, to: newName)
                 }
@@ -301,6 +306,7 @@ struct ChatView: View {
 
             if sending {
                 Button {
+                    Haptics.warning()
                     sendTask?.cancel()
                     sending = false
                 } label: {
@@ -334,9 +340,11 @@ struct ChatView: View {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !sending else { return }
         guard quota.remaining > 0 else {
+            Haptics.error()
             errorText = "Quota mensuel atteint."
             return
         }
+        Haptics.impact(.medium)
         errorText = nil
         draft = ""
         inputFocused = false
@@ -350,6 +358,7 @@ struct ChatView: View {
                 let reply = try await client.chat(messages: history)
                 if !Task.isCancelled {
                     conversation.messages.append(ChatItem(role: "assistant", text: reply))
+                    Haptics.success()
                     // Auto-renomme la conv sur le premier message
                     if conversation.messages.count == 2 && conversation.name == "Nouvelle conversation" {
                         let shortName = String(text.prefix(30))
@@ -361,6 +370,7 @@ struct ChatView: View {
                 }
             } catch {
                 if !Task.isCancelled {
+                    Haptics.error()
                     errorText = (error as? LocalizedError)?.errorDescription ?? "Une erreur est survenue."
                 }
             }

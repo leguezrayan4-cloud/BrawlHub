@@ -41,6 +41,7 @@ struct UpdatesView: View {
                             }
                             .padding(.vertical, 4)
                         }
+                        .hapticTap()
                     }
                 }
                 .scrollContentBackground(.hidden)

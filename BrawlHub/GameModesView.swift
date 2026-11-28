@@ -22,6 +22,7 @@ struct GameModesView: View {
                                 NavigationLink(destination: MapDetailView(map: map, mode: mode)) {
                                     MapRow(map: map)
                                 }
+                                .hapticTap()
                             }
                         } header: {
                             HStack(spacing: 8) {

@@ -47,7 +47,7 @@ struct PlayerView: View {
                             .background(Color.white.opacity(0.08))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                        Button("Chercher") { search() }
+                        Button("Chercher") { Haptics.impact(.medium); search() }
                             .buttonStyle(.borderedProminent)
                             .tint(.yellow)
                             .disabled(tag.trimmingCharacters(in: .whitespaces).isEmpty || loading)
@@ -135,7 +135,9 @@ struct PlayerView: View {
         Task {
             do {
                 profile = try await client.player(tag: clean)
+                Haptics.success()
             } catch {
+                Haptics.error()
                 errorText = (error as? LocalizedError)?.errorDescription ?? "Une erreur est survenue."
             }
             loading = false

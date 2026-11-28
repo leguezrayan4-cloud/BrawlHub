@@ -25,6 +25,7 @@ struct AccountView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .onChange(of: mode) { _ in Haptics.selection() }
                 }
 
                 Section {
@@ -48,6 +49,7 @@ struct AccountView: View {
 
                 Section {
                     Button(mode == .create ? "Créer mon compte" : "Me connecter") {
+                        Haptics.warning()
                         showInfo = true
                     }
                     .frame(maxWidth: .infinity)

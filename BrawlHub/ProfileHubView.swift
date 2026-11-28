@@ -3,6 +3,7 @@ import SwiftUI
 struct ProfileHubView: View {
     @AppStorage("savedPlayerTag") var savedPlayerTag = ""
     @AppStorage("onboardingDone") var onboardingDone = true
+    @AppStorage("hapticsEnabled") var hapticsEnabled = true
     @State private var showPlayer = false
     @State private var showAccount = false
     @State private var showTagEdit = false
@@ -17,6 +18,7 @@ struct ProfileHubView: View {
                     Section {
                         if savedPlayerTag.isEmpty {
                             Button {
+                                Haptics.tap()
                                 tagInput = ""
                                 showTagEdit = true
                             } label: {
@@ -29,6 +31,7 @@ struct ProfileHubView: View {
                                     .font(.headline)
                                 Spacer()
                                 Button {
+                                    Haptics.tap()
                                     tagInput = savedPlayerTag
                                     showTagEdit = true
                                 } label: {
@@ -37,6 +40,7 @@ struct ProfileHubView: View {
                                 }
                             }
                             Button {
+                                Haptics.tap()
                                 showPlayer = true
                             } label: {
                                 Label("Voir mes stats", systemImage: "chart.bar.fill")
@@ -48,7 +52,7 @@ struct ProfileHubView: View {
 
                     // Recherche
                     Section {
-                        Button { showPlayer = true } label: {
+                        Button { Haptics.tap(); showPlayer = true } label: {
                             Label("Rechercher un joueur", systemImage: "magnifyingglass")
                         }
                     } header: {
@@ -57,16 +61,30 @@ struct ProfileHubView: View {
 
                     // Compte
                     Section {
-                        Button { showAccount = true } label: {
+                        Button { Haptics.tap(); showAccount = true } label: {
                             Label("Compte BrawlHub", systemImage: "person.crop.circle")
                         }
                     } header: {
                         Text("Mon compte")
                     }
 
+                    // Réglages
+                    Section {
+                        Toggle(isOn: $hapticsEnabled) {
+                            Label("Vibrations", systemImage: "iphone.radiowaves.left.and.right")
+                        }
+                        .tint(.yellow)
+                        .onChange(of: hapticsEnabled) { on in
+                            if on { Haptics.impact(.medium) }
+                        }
+                    } header: {
+                        Text("Réglages")
+                    }
+
                     // Onboarding
                     Section {
                         Button {
+                            Haptics.impact(.soft)
                             onboardingDone = false
                         } label: {
                             Label("Revoir l'introduction", systemImage: "arrow.counterclockwise")
@@ -88,6 +106,7 @@ struct ProfileHubView: View {
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
                 Button("Enregistrer") {
+                    Haptics.success()
                     savedPlayerTag = tagInput.uppercased().replacingOccurrences(of: "#", with: "")
                 }
                 Button("Annuler", role: .cancel) {}

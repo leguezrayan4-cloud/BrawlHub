@@ -82,6 +82,7 @@ struct OnboardingView: View {
                     VStack(spacing: 12) {
                         Button {
                             savedPlayerTag = tagInput.uppercased().replacingOccurrences(of: "#", with: "")
+                            Haptics.success()
                             onboardingDone = true
                         } label: {
                             Text("C'est parti !")
@@ -95,7 +96,7 @@ struct OnboardingView: View {
                         .disabled(tagInput.trimmingCharacters(in: .whitespaces).isEmpty)
                         .padding(.horizontal, 40)
 
-                        Button { onboardingDone = true } label: {
+                        Button { Haptics.impact(.soft); onboardingDone = true } label: {
                             Text("Passer")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
@@ -106,6 +107,7 @@ struct OnboardingView: View {
                 .tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
+            .onChange(of: page) { _ in Haptics.selection() }
         }
     }
 }
