@@ -58,7 +58,7 @@ final class BrawlerStore: ObservableObject {
         loading = true
         error = nil
         do {
-            let url = URL(string: "https://api.brawlify.com/v1/brawlers")!
+            let url = URL(string: "https://api.brawlapi.com/v1/brawlers")!
             let (data, _) = try await URLSession.shared.data(from: url)
             let res = try JSONDecoder().decode(BrawlersResponse.self, from: data)
             brawlers = res.list.sorted { $0.name < $1.name }
