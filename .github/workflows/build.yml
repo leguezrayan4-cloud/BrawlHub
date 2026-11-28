@@ -1,91 +1,28 @@
 name: Build IPA
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
-# Annule une compilation déjà en attente si on pousse une nouvelle version
-concurrency:
-  group: build-ipa-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build-primary:
+  build:
     runs-on: macos-26
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-
-      - name: Afficher les versions
-        run: |
-          sw_vers
-          xcodebuild -version
-
-      - name: Installer XcodeGen
-        run: |
-          brew install xcodegen || (brew update && brew install xcodegen)
-
-      - name: Générer le projet Xcode
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
         run: xcodegen generate
-
-      - name: Compiler
+      - name: Build (unsigned)
         run: |
-          set -o pipefail
           xcodebuild -project BrawlHub.xcodeproj -scheme BrawlHub \
             -configuration Release -sdk iphoneos -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            | tail -n 60
-
-      - name: Créer l'IPA
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+      - name: Package IPA
         run: |
           mkdir Payload
           cp -R build/Build/Products/Release-iphoneos/BrawlHub.app Payload/
           zip -r BrawlHub.ipa Payload
-          test -f BrawlHub.ipa
-
       - uses: actions/upload-artifact@v4
         with:
           name: BrawlHub-ipa
-          path: BrawlHub.ipa
-
-  # Lancé si la première machine échoue OU si elle a été annulée
-  build-fallback:
-    needs: build-primary
-    if: ${{ failure() || cancelled() }}
-    runs-on: macos-15
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Afficher les versions
-        run: |
-          sw_vers
-          xcodebuild -version
-
-      - name: Installer XcodeGen
-        run: |
-          brew install xcodegen || (brew update && brew install xcodegen)
-
-      - name: Générer le projet Xcode
-        run: xcodegen generate
-
-      - name: Compiler
-        run: |
-          set -o pipefail
-          xcodebuild -project BrawlHub.xcodeproj -scheme BrawlHub \
-            -configuration Release -sdk iphoneos -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            | tail -n 60
-
-      - name: Créer l'IPA
-        run: |
-          mkdir Payload
-          cp -R build/Build/Products/Release-iphoneos/BrawlHub.app Payload/
-          zip -r BrawlHub.ipa Payload
-          test -f BrawlHub.ipa
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: BrawlHub-ipa-fallback
           path: BrawlHub.ipa
